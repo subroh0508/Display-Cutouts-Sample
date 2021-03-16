@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.DisplayCutoutsSample" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.DisplayCutoutsSample" parent="Base.Theme.DisplayCutoutsSample">
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/black</item>

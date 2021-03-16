@@ -1,12 +1,13 @@
 package net.subroh0508.displaycutoutssample
 
 import android.graphics.Rect
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import androidx.annotation.IdRes
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.topAppBar)
 
-        setOnSystemUiVisibilityChangeListener()
+        setOnStatusBarToggleListener()
 
         displayFragment(R.id.fragment_container, MainFragment())
     }
@@ -32,23 +33,30 @@ class MainActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
-        if (window.decorView.systemUiVisibility == View.SYSTEM_UI_FLAG_VISIBLE) {
+        if (isVisibleStatusBar) {
             statusBarHeight = Rect().let { window.decorView.getWindowVisibleDisplayFrame(it); it.top }
         }
     }
 
-    private fun setOnSystemUiVisibilityChangeListener() {
+    private fun setOnStatusBarToggleListener() {
         window.decorView.setOnSystemUiVisibilityChangeListener listener@ { visibility ->
             if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-                binding.messageBehindStatusBar.isVisible = false
+                binding.messageBehindStatusBar.text = ""
+                binding.messageBehindStatusBar.setBackgroundColor(getColorAttributes(R.attr.colorPrimaryVariant))
 
                 return@listener
             }
 
-            binding.messageBehindStatusBar.isVisible = true
+            binding.messageBehindStatusBar.setText(R.string.sample_message)
+            binding.messageBehindStatusBar.setBackgroundColor(getColorAttributes(R.attr.colorSecondary))
+        }
+
+        binding.appBarLayout.setOnApplyWindowInsetsListener { _, insets ->
+            showDisplayCutout(insets)
             binding.messageBehindStatusBar.updateLayoutParams<ViewGroup.LayoutParams> {
-                height = statusBarHeight
+                height = insets.systemWindowInsetTop
             }
+            insets.consumeSystemWindowInsets()
         }
     }
 
@@ -62,5 +70,25 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.commit {
             replace(frame, displayFragment, fragmentTag)
         }
+    }
+
+    private fun showDisplayCutout(insets: WindowInsets) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val cutout = insets.displayCutout
+
+            println("cutout: ${cutout?.toString()}")
+
+            val left = cutout?.safeInsetLeft ?: 0
+            val top = cutout?.safeInsetTop ?: 0
+            val right = cutout?.safeInsetRight ?: 0
+            val bottom = cutout?.safeInsetBottom ?: 0
+
+            println("safe area: ($left, $top, $right, $bottom)")
+
+            cutout?.boundingRects?.forEach { println("bounding rect: $it") }
+            return
+        }
+
+        println("safe area: null)")
     }
 }

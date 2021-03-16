@@ -7,7 +7,6 @@ import net.subroh0508.displaycutoutssample.databinding.FragmentMainBinding
 
 class MainFragment : Fragment(R.layout.fragment_main) {
     private lateinit var binding: FragmentMainBinding
-    private val isVisibleStatusBar get() = activity?.window?.decorView?.systemUiVisibility == View.SYSTEM_UI_FLAG_VISIBLE
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -21,11 +20,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun hideStatusBar() {
         activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        //activity?.actionBar?.hide()
+        // activity?.actionBar?.hide()
     }
 
     private fun showStatusBar() {
         activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-        //activity?.actionBar?.show()
+        // activity?.actionBar?.show()
     }
 }
