@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Display Cutouts Sample</string>
+
+    <string name="button_caption_change_status_bar">Change Status Bar</string>
 </resources>
