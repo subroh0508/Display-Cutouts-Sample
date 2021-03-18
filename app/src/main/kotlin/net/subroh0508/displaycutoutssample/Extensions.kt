@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 
 private val Window.isVisibleStatusBar get() = decorView.systemUiVisibility == View.SYSTEM_UI_FLAG_VISIBLE
 
+val AppCompatActivity.isVisibleStatusBar get() = window.isVisibleStatusBar
 val Fragment.isVisibleStatusBar get() = activity?.window?.isVisibleStatusBar ?: false
 
 private fun WindowInsets.topDisplayCutoutRect(): Rect {

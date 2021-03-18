@@ -3,11 +3,10 @@ package net.subroh0508.displaycutoutssample
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
-import android.widget.LinearLayout
+import android.view.View
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.core.view.children
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import net.subroh0508.displaycutoutssample.databinding.ActivityMainBinding
@@ -38,18 +37,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.appBarLayout.addView(customStatusBar, 0)
+        if (isVisibleStatusBar) {
+            customStatusBar.height = 0
+        }
     }
 
     private fun setOnStatusBarToggleListener() {
+        // For below API 29 ?
+        window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
+            if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
+                customStatusBar.height = 0
+            }
+        }
+
         binding.appBarLayout.setOnApplyWindowInsetsListener { _, insets ->
             customStatusBar.gravity =
                 if (isDisplayCutoutCenter(insets))
                     Gravity.CENTER_VERTICAL or Gravity.END
                 else
                     Gravity.CENTER
-            customStatusBar.updateLayoutParams<LinearLayout.LayoutParams> {
-                height = insets.systemWindowInsetTop
-            }
+            customStatusBar.height = insets.systemWindowInsetTop
 
             insets.consumeSystemWindowInsets()
         }
