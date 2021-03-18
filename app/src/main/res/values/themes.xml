@@ -1,7 +1,6 @@
 <resources>
     <style name="Base.Theme.DisplayCutoutsSample" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
-        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="Theme.DisplayCutoutsSample" parent="Base.Theme.DisplayCutoutsSample">

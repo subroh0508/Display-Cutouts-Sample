@@ -1,13 +1,13 @@
 package net.subroh0508.displaycutoutssample
 
-import android.graphics.Rect
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
 import android.view.WindowInsets
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.IdRes
+import androidx.core.view.children
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -15,7 +15,9 @@ import net.subroh0508.displaycutoutssample.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var statusBarHeight: Int = 0
+    private val customStatusBar: TextView by lazy {
+        layoutInflater.inflate(R.layout.text_view_custom_status_bar, null) as TextView
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,37 +27,28 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.topAppBar)
 
+        insertCustomStatusBar()
         setOnStatusBarToggleListener()
 
         displayFragment(R.id.fragment_container, MainFragment())
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-
-        if (isVisibleStatusBar) {
-            statusBarHeight = Rect().let { window.decorView.getWindowVisibleDisplayFrame(it); it.top }
+    private fun insertCustomStatusBar() {
+        if (binding.appBarLayout.children.first() == customStatusBar) {
+            return
         }
+
+        binding.appBarLayout.addView(customStatusBar, 0)
     }
 
     private fun setOnStatusBarToggleListener() {
-        window.decorView.setOnSystemUiVisibilityChangeListener listener@ { visibility ->
-            if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-                binding.messageBehindStatusBar.text = ""
-                binding.messageBehindStatusBar.setBackgroundColor(getColorAttributes(R.attr.colorPrimaryVariant))
-
-                return@listener
-            }
-
-            binding.messageBehindStatusBar.setText(R.string.sample_message)
-            binding.messageBehindStatusBar.setBackgroundColor(getColorAttributes(R.attr.colorSecondary))
-        }
-
         binding.appBarLayout.setOnApplyWindowInsetsListener { _, insets ->
             showDisplayCutout(insets)
-            binding.messageBehindStatusBar.updateLayoutParams<ViewGroup.LayoutParams> {
+            println("system window inset top: ${insets.systemWindowInsetTop}")
+            customStatusBar.updateLayoutParams<LinearLayout.LayoutParams> {
                 height = insets.systemWindowInsetTop
             }
+
             insets.consumeSystemWindowInsets()
         }
     }
