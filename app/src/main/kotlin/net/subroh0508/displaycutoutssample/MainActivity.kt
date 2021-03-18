@@ -1,9 +1,8 @@
 package net.subroh0508.displaycutoutssample
 
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowInsets
+import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.IdRes
@@ -43,8 +42,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setOnStatusBarToggleListener() {
         binding.appBarLayout.setOnApplyWindowInsetsListener { _, insets ->
-            showDisplayCutout(insets)
-            println("system window inset top: ${insets.systemWindowInsetTop}")
+            customStatusBar.gravity =
+                if (isDisplayCutoutCenter(insets))
+                    Gravity.CENTER_VERTICAL or Gravity.END
+                else
+                    Gravity.CENTER
             customStatusBar.updateLayoutParams<LinearLayout.LayoutParams> {
                 height = insets.systemWindowInsetTop
             }
@@ -63,25 +65,5 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.commit {
             replace(frame, displayFragment, fragmentTag)
         }
-    }
-
-    private fun showDisplayCutout(insets: WindowInsets) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val cutout = insets.displayCutout
-
-            println("cutout: ${cutout?.toString()}")
-
-            val left = cutout?.safeInsetLeft ?: 0
-            val top = cutout?.safeInsetTop ?: 0
-            val right = cutout?.safeInsetRight ?: 0
-            val bottom = cutout?.safeInsetBottom ?: 0
-
-            println("safe area: ($left, $top, $right, $bottom)")
-
-            cutout?.boundingRects?.forEach { println("bounding rect: $it") }
-            return
-        }
-
-        println("safe area: null)")
     }
 }
