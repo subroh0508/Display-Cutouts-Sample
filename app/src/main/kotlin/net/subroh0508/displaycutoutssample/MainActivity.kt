@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setOnStatusBarToggleListener() {
-        // For below API 29 ?
+        // For SDK_INT <= 27
         window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
             if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
                 customStatusBar.height = 0
