@@ -3,7 +3,6 @@ package net.subroh0508.displaycutoutssample
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
-import android.view.View
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.core.view.children
@@ -41,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setOnStatusBarToggleListener() {
-        window.decorView.setOnApplyWindowInsetsListener { _, insets ->
+        binding.appBarLayout.setOnApplyWindowInsetsListener { _, insets ->
             customStatusBar.gravity =
                 if (isDisplayCutoutCenter(insets))
                     Gravity.CENTER_VERTICAL or Gravity.END
@@ -49,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                     Gravity.CENTER
             customStatusBar.height = insets.systemWindowInsetTop
 
-            window.decorView.onApplyWindowInsets(insets)
+            insets.consumeSystemWindowInsets()
         }
     }
 
