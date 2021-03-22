@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.topAppBar)
 
+        showStatusBarAndFullscreen()
         insertCustomStatusBar()
         setOnStatusBarToggleListener()
 
@@ -37,20 +38,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.appBarLayout.addView(customStatusBar, 0)
-        if (isVisibleStatusBar) {
-            customStatusBar.height = 0
-        }
     }
 
     private fun setOnStatusBarToggleListener() {
-        // For SDK_INT <= 27
-        window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
-            if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-                customStatusBar.height = 0
-            }
-        }
-
-        binding.appBarLayout.setOnApplyWindowInsetsListener { _, insets ->
+        window.decorView.setOnApplyWindowInsetsListener { _, insets ->
             customStatusBar.gravity =
                 if (isDisplayCutoutCenter(insets))
                     Gravity.CENTER_VERTICAL or Gravity.END
@@ -58,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                     Gravity.CENTER
             customStatusBar.height = insets.systemWindowInsetTop
 
-            insets.consumeSystemWindowInsets()
+            window.decorView.onApplyWindowInsets(insets)
         }
     }
 

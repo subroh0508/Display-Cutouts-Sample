@@ -14,18 +14,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding = FragmentMainBinding.bind(view)
 
         binding.changeStatusBar.setOnClickListener {
-            if (isVisibleStatusBar) hideStatusBar() else showStatusBar()
+            if (isVisibleStatusBar) hideStatusBarAndFullscreen() else showStatusBarAndFullscreen()
         }
-    }
-
-    private fun hideStatusBar() {
-        activity?.window?.decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-    }
-
-    private fun showStatusBar() {
-        activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
     }
 }

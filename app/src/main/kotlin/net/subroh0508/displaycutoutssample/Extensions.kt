@@ -9,10 +9,27 @@ import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
-private val Window.isVisibleStatusBar get() = decorView.systemUiVisibility == View.SYSTEM_UI_FLAG_VISIBLE
+private val Window.isVisibleStatusBar get() = decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0
 
 val AppCompatActivity.isVisibleStatusBar get() = window.isVisibleStatusBar
 val Fragment.isVisibleStatusBar get() = activity?.window?.isVisibleStatusBar ?: false
+
+private fun Window.hideStatusBarAndFullscreen() {
+    decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+}
+private fun Window.showStatusBarAndFullscreen() {
+    decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_VISIBLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+}
+
+fun AppCompatActivity.hideStatusBarAndFullscreen() = window.hideStatusBarAndFullscreen()
+fun AppCompatActivity.showStatusBarAndFullscreen() = window.showStatusBarAndFullscreen()
+fun Fragment.hideStatusBarAndFullscreen() = activity?.window?.hideStatusBarAndFullscreen()
+fun Fragment.showStatusBarAndFullscreen() = activity?.window?.showStatusBarAndFullscreen()
 
 private fun WindowInsets.topDisplayCutoutRect(): Rect {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
