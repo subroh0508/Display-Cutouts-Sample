@@ -1,8 +1,10 @@
 package net.subroh0508.displaycutoutssample
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
+import android.view.WindowInsets
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.core.view.children
@@ -40,15 +42,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setOnStatusBarToggleListener() {
-        binding.appBarLayout.setOnApplyWindowInsetsListener { _, insets ->
+        window.decorView.setOnApplyWindowInsetsListener { _, insets ->
             customStatusBar.gravity =
                 if (isDisplayCutoutCenter(insets))
                     Gravity.CENTER_VERTICAL or Gravity.END
                 else
                     Gravity.CENTER
-            customStatusBar.height = insets.systemWindowInsetTop
 
-            insets.consumeSystemWindowInsets()
+            setCustomStatusBarHeight(insets)
+
+            window.decorView.onApplyWindowInsets(insets)
         }
     }
 
@@ -62,5 +65,14 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.commit {
             replace(frame, displayFragment, fragmentTag)
         }
+    }
+
+    @Suppress("Deprecation")
+    private fun setCustomStatusBarHeight(insets: WindowInsets) {
+        customStatusBar.height =
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
+                insets.systemWindowInsetTop
+            else
+                insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars()).top
     }
 }
