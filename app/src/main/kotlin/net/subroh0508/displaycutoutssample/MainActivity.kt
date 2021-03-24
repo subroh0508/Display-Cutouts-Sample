@@ -70,9 +70,9 @@ class MainActivity : AppCompatActivity() {
     @Suppress("Deprecation")
     private fun setCustomStatusBarHeight(insets: WindowInsets) {
         customStatusBar.height =
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
-                insets.systemWindowInsetTop
-            else
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
                 insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars()).top
+            else
+                insets.systemWindowInsetTop
     }
 }
